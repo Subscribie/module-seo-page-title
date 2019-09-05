@@ -16,7 +16,7 @@
 {% for rule in rules %}
 <tr>
   <td>{{ rule['path'] }}</td>
-  <td>{{ current_title }}</td>
+  <td>{{ rule['title'] }}</td>
   <td><a href="{{ url_for('seo_page_title.set_page_title', encodedPath=rule['encodedPath']) }}">
       Edit title
       </a>
