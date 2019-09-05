@@ -1,0 +1,26 @@
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul>
+    {% for message in messages %}
+      <li>{{ message }}</li>
+    {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+{% block body %}{% endblock %}
+
+<table border="1">
+  <th>Route</th>
+  <th>Default title</th>
+  <th>Custom title</th>
+{% for rule in rules %}
+<tr>
+  <td>{{ rule['path'] }}</td>
+  <td>{{ current_title }}</td>
+  <td><a href="{{ url_for('seo_page_title.set_page_title', encodedPath=rule['encodedPath']) }}">
+      Edit title
+      </a>
+  </td>
+</tr>
+{% endfor %}
+</table>
