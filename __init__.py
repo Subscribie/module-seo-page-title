@@ -2,27 +2,38 @@ from flask import (Blueprint, render_template, abort, url_for, request, flash,
                   redirect)
 from jinja2 import TemplateNotFound
 from subscribie import current_app
-from subscribie.db import get_db
+from subscribie.db import get_db, get_jamla
+from subscribie.auth import login_required
 from base64 import urlsafe_b64encode, urlsafe_b64decode
 import sqlite3
 
 module_seo_page_title = Blueprint('seo_page_title', __name__, template_folder='templates')
 
+@module_seo_page_title.app_context_processor
+def inject_page_title():
+  title = getPathTitle(request.path)
+  return dict(title=title)
 
 @module_seo_page_title.route('/list-page-titles')
+@login_required
 def list_pages():
   rules = []
   for rule in current_app.url_map.iter_rules():
-    rules.append({
-              'path': rule, 
-              'encodedPath': urlsafe_b64encode(str(rule).encode('ascii')),
-              'title': getPathTitle(str(rule))
-    })
+    # Ignore admin paths
+    if "/admin/" not in rule.rule and \
+    "/auth/" not in rule.rule and \
+    "/_uploads/" not in rule.rule and \
+    "/static/" not in rule.rule and \
+    "/up_front/" not in rule.rule:
+      rules.append({
+                'path': rule, 
+                'encodedPath': urlsafe_b64encode(str(rule).encode('ascii')),
+                'title': getPathTitle(str(rule))
+      })
 
   try:
-    return render_template('list-urls.html', rules=rules)
+    return render_template('list-urls.html', rules=rules, jamla=get_jamla())
   except TemplateNotFound:
-    return "OK"
     abort(404)
 
 def getPathTitle(path):
@@ -36,10 +47,13 @@ def getPathTitle(path):
     return title 
 
 @module_seo_page_title.route('/set-page-title/<encodedPath>', methods=['GET', 'POST'])
+@login_required
 def set_page_title(encodedPath):
   path = urlsafe_b64decode(encodedPath).decode('utf-8')
+  current_path_title = getPathTitle(path)
   if request.method == "GET":
-    return render_template('set-page-title.html', path=str(path))
+    return render_template('set-page-title.html', path=str(path), 
+                            jamla=get_jamla(), current_path_title=current_path_title)
   elif request.method == "POST":
     title = request.form['title']
     con = sqlite3.connect(current_app.config['DB_FULL_PATH'])

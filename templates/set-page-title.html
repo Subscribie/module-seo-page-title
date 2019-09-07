@@ -1,8 +1,46 @@
-<h1>Set page title</h1>
-<h2>Path: {{ path }}</h2>
-Set the page title for page: {{ path }}.
+{% extends "admin/layout.html" %}
+{% block title %} {{ title }} {% endblock %}
+
+{% block hero %}
+
+    <h1 class="title is-1 has-text-white has-text-centered is-size-3-mobile">Set page title</h1>
+
+{% endblock %}
+
+{% block body %}
+      
+<div style="padding: 1rem 1.5rem 0 1.5rem;">
+  <div class="container">
+    <nav class="breadcrumb" aria-label="breadcrumbs">
+      <ul>
+        <p>You're here: </p>
+        <li><a href="{{ url_for("admin.dashboard") }}">Dashboard</a></li>
+        <li class="is-active"><a href="#" aria-current="page">Set page title</a></li>
+      </ul>
+    </nav>
+  </div>
+</div>
+
+<div class="section">
+  <div class="container">
+
+
+  {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+      </ul>
+    {% endif %}
+  {% endwith %}
+
+  Set the page title for page: {{ path }}.
+
 
 <form method="POST" action="#">
-  <input type="text" name="title" value="{{ default }}" />  
+  <input type="text" name="title" value="{{ current_path_title }}" />  
   <input type="submit" value="Save" />
 </form>
+
+{% endblock body %}
