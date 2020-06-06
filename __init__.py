@@ -2,7 +2,7 @@ from flask import (Blueprint, render_template, abort, url_for, request, flash,
                   redirect)
 from jinja2 import TemplateNotFound
 from subscribie import current_app
-from subscribie.db import get_db, get_jamla
+from subscribie.db import get_db 
 from subscribie.auth import login_required
 from base64 import urlsafe_b64encode, urlsafe_b64decode
 import sqlite3
@@ -32,7 +32,7 @@ def list_pages():
       })
 
   try:
-    return render_template('list-urls.html', rules=rules, jamla=get_jamla())
+    return render_template('list-urls.html', rules=rules)
   except TemplateNotFound:
     abort(404)
 
@@ -53,7 +53,7 @@ def set_page_title(encodedPath):
   current_path_title = getPathTitle(path)
   if request.method == "GET":
     return render_template('set-page-title.html', path=str(path), 
-                            jamla=get_jamla(), current_path_title=current_path_title)
+                            current_path_title=current_path_title)
   elif request.method == "POST":
     title = request.form['title']
     con = sqlite3.connect(current_app.config['DB_FULL_PATH'])
