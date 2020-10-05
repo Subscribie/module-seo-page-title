@@ -1,12 +1,5 @@
-### SEO Page Title Module
+### SEO Page Title Module (moved to subscribie core)
 
-Ability to set page titles on any page
+Ability to set page titles on any page.
 
-
-## Usage
-
--> Install module (this module is installed by default on subscribie hosted)
--> Login to dashboard
--> Follow the link to edit setp page titles
-
-For each page, edit the page title as desired
+Now in core https://github.com/Subscribie/subscribie/commit/099ec0bba2f3f27f54b2024a19a90b3b63364265
